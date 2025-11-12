@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoPoint - Coleta Seletiva </title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+  <header>
+    <h1><img src="assets/point.png" class="img-header"></h1>
+    <p>Encontre o ponto de coleta mais próximo</p>
+  </header>
+
+  <main>
+    <section id="controls">
+      <select id="tipo"></select>
+      <button id="btnGeo">Usar minha localização</button>
+      <button id="btnBuscar">Buscar ponto</button>
+      <p id="status">Escolha um tipo de resíduo e clique em buscar.</p>
+    </section>
+
+    <div id="map"></div>
+
+    <section id="resultado" hidden>
+      <h3>Resultado</h3>
+      <p id="r-nome"></p>
+      <p id="r-endereco"></p>
+    </section>
+  </main>
+
+  <footer>
+    Ciência da Computação - UNIP Goiânia.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

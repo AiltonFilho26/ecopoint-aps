@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model WasteType {
+  id     String       @id @default(uuid())
+  name   String       @unique
+  points PointWaste[]
+}
+
+model Point {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  latitude    Float
+  longitude   Float
+  address     String
+  createdAt   DateTime     @default(now())
+  wasteTypes  PointWaste[]
+}
+
+model PointWaste {
+  id          String    @id @default(uuid())
+  pointId     String
+  wasteTypeId String
+  point       Point     @relation(fields: [pointId], references: [id], onDelete: Cascade)
+  wasteType   WasteType @relation(fields: [wasteTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([pointId, wasteTypeId])
+}
