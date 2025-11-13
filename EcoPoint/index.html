@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EcoPoint Goiás - Encontre Pontos de Coleta Seletiva</title>
+    <meta
+      name="description"
+      content="Localize pontos de coleta seletiva em Goiás de forma rápida e ajude o meio ambiente. Encontre o destino certo para plástico, vidro, papel, metal e eletrônicos."
+    />
+    <meta name="author" content="EcoPoint Goiás" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Carme&display=swap"
+    />
+
+    <!-- Open Graph -->
+    <meta
+      property="og:title"
+      content="EcoPoint Goiás - Encontre Pontos de Coleta Seletiva"
+    />
+    <meta
+      property="og:description"
+      content="Localize pontos de coleta seletiva em Goiás de forma rápida e ajude o meio ambiente."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/standalone/" />
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <div class="brand">
+          <img src="/backend/img/logo.png" alt="EcoPoint Logo" class="brand__logo" />
+          <span class="brand__name"> Goiás</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Hero -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__bg"></div>
+        <div class="container hero__content">
+          <h1 id="hero-title" class="hero__title">
+            Encontre o destino certo para o seu resíduo em Goiás.
+          </h1>
+          <p class="hero__subtitle">
+            Localize pontos de coleta seletiva de forma rápida e ajude o meio
+            ambiente.
+          </p>
+        </div>
+      </section>
+
+      <!-- Search Card -->
+      <section class="section section--muted" aria-labelledby="search-title">
+        <div class="container">
+          <div class="card">
+            <div class="stack gap-24">
+              <div class="stack gap-12">
+                <label id="search-title" class="label-xl"
+                  >Qual tipo de resíduo você quer descartar?</label
+                >
+                <div class="waste-grid" id="waste-grid">
+                  <button
+                    class="waste-card"
+                    data-type="plastic"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="recycle"></i
+                    ></span>
+                    <span class="waste-card__label">Plástico</span>
+                  </button>
+                  <button
+                    class="waste-card"
+                    data-type="glass"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="wine"></i
+                    ></span>
+                    <span class="waste-card__label">Vidro</span>
+                  </button>
+                  <button
+                    class="waste-card"
+                    data-type="paper"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="file-text"></i
+                    ></span>
+                    <span class="waste-card__label">Papel</span>
+                  </button>
+                  <button
+                    class="waste-card"
+                    data-type="metal"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="recycle"></i
+                    ></span>
+                    <span class="waste-card__label">Metal</span>
+                  </button>
+                  <button
+                    class="waste-card"
+                    data-type="electronics"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="cpu"></i
+                    ></span>
+                    <span class="waste-card__label">Eletrônicos</span>
+                  </button>
+                  <button
+                    class="waste-card"
+                    data-type="batteries"
+                    aria-pressed="false"
+                  >
+                    <span class="waste-card__icon"
+                      ><i data-lucide="battery"></i
+                    ></span>
+                    <span class="waste-card__label">Baterias</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="stack gap-12">
+                <label class="label-xl">Onde você está?</label>
+                <div class="row gap-12 stack-sm">
+                  <div class="input-wrap">
+                    <i data-lucide="map-pin" class="input-icon"></i>
+                    <input
+                      id="location-input"
+                      class="input"
+                      type="text"
+                      placeholder="Digite seu endereço, bairro ou CEP..."
+                    />
+                  </div>
+                  <button id="use-location" class="btn btn--outline">
+                    <i data-lucide="navigation"></i>
+                    <span>Usar minha localização</span>
+                  </button>
+                </div>
+              </div>
+
+              <button id="search-btn" class="btn btn--lg">
+                <i data-lucide="search"></i>
+                <span>Buscar Pontos de Coleta</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section
+        id="results"
+        class="section"
+        aria-labelledby="results-title"
+        hidden
+      >
+        <div class="container">
+          <h2 id="results-title" class="title-lg">
+            Pontos de Coleta Encontrados
+          </h2>
+          <div class="results-list" id="results-list" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="muted">© <span id="year"></span> EcoPoint Goiás</p>
+      </div>
+    </footer>
+  </body>
+</html>
