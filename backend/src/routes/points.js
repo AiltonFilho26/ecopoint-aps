@@ -1,5 +1,7 @@
 import express from "express";
 import prisma from "../db.js";
+import { getDistanceFromLatLonInKm } from "../utils/distance.js";
+import { getCoordsFromText } from "../utils/geocoding.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -71,30 +73,41 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/nearest", async (req, res) => {
-  const { lat, lng, typeIds } = req.query;
+  const { lat, lon, typeIds, address } = req.query;
 
-  if (!lat || !lng) {
-    return res
-      .status(400)
-      .json({ error: "Latitude e longitude são obrigatórias." });
-  }
-
-  let filter = {};
-  if (typeIds) {
-    const ids = typeIds
-      .split(",")
-      .map((id) => id.trim())
-      .filter((id) => id.length > 0);
-    if (ids.length > 0) {
-      filter = {
-        wasteTypes: {
-          some: { wasteTypeId: { in: ids } },
-        },
-      };
-    }
-  }
+  let userLat, userLng;
 
   try {
+    if (lat && lon) {
+      userLat = parseFloat(lat);
+      userLng = parseFloat(lon);
+    } else if (address) {
+      console.log("Buscando coordenadas para:", address);
+      const coords = await getCoordsFromText(address);
+      userLat = coords.lat;
+      userLng = coords.lng;
+      console.log("Coordenadas obtidas:", coords);
+    } else {
+      return res.status(400).json({
+        error: "Parâmetros de localização são obrigatórios.",
+      });
+    }
+
+    let filter = {};
+    if (typeIds) {
+      const ids = typeIds
+        .split(",")
+        .map((id) => id.trim())
+        .filter((id) => id.length > 0);
+      if (ids.length > 0) {
+        filter = {
+          wasteTypes: {
+            some: { wasteTypeId: { in: ids } },
+          },
+        };
+      }
+    }
+
     const points = await prisma.point.findMany({
       where: filter,
       include: { wasteTypes: { include: { wasteType: true } } },
@@ -103,20 +116,20 @@ router.get("/nearest", async (req, res) => {
     if (!points.length)
       return res.status(404).json({ error: "Nenhum ponto encontrado." });
 
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
-
-    const nearest = points.reduce((prev, curr) => {
-      const distPrev = Math.sqrt(
-        (prev.latitude - latNum) ** 2 + (prev.longitude - lngNum) ** 2
+    const pointsWithDistance = points.map((point) => {
+      const distance = getDistanceFromLatLonInKm(
+        userLat,
+        userLng,
+        point.latitude,
+        point.longitude
       );
-      const distCurr = Math.sqrt(
-        (curr.latitude - latNum) ** 2 + (curr.longitude - lngNum) ** 2
-      );
-      return distCurr < distPrev ? curr : prev;
+      return { ...point, distanceInKm: distance };
     });
 
-    res.json(nearest);
+    pointsWithDistance.sort((a, b) => a.distanceInKm - b.distanceInKm);
+    const nearestFive = pointsWithDistance.slice(0, 5);
+
+    res.json(nearestFive);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
